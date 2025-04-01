@@ -12,6 +12,8 @@ namespace App.Services
         [JsonIgnore] public bool IsFail => !IsSuccess;
         [JsonIgnore] public HttpStatusCode Status { get; set; }
 
+        [JsonIgnore] public string? UrlAsCreated { get; set; }
+
         // Static Factory Methods
         public static ServiceResult<T> Success(T data,HttpStatusCode status = HttpStatusCode.OK)
         {
@@ -19,6 +21,15 @@ namespace App.Services
             {
                 Data = data,
                 Status = status
+            };
+        }
+        public static ServiceResult<T> SuccessAsCreated(T data,string url)
+        {
+            return new ServiceResult<T>()
+            {
+                Data = data,
+                Status = HttpStatusCode.Created,
+                UrlAsCreated = url
             };
         }
         public static ServiceResult<T> Fail(List<string> errors, HttpStatusCode status = HttpStatusCode.BadRequest)

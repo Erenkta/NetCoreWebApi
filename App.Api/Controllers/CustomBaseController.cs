@@ -11,11 +11,12 @@ namespace App.Api.Controllers
         [NonAction]
         public IActionResult CreateActionResult<T>(ServiceResult<T> result)
         {
-            if (result.Status == System.Net.HttpStatusCode.NoContent)
+            return result.Status switch
             {
-                return new ObjectResult(null) { StatusCode = result.Status.GetHashCode() };
-            }
-            return new ObjectResult(result) { StatusCode = result.Status.GetHashCode() };
+                System.Net.HttpStatusCode.NoContent => NoContent(),
+                System.Net.HttpStatusCode.Created => Created(result.UrlAsCreated, result.Data),
+                _ => new ObjectResult(result) { StatusCode = result.Status.GetHashCode() }
+            };
         }
 
         [NonAction] // Swagger bunları bir endpoint olarak algılamasın
