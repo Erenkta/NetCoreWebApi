@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace App.Repositories;
+namespace App.Repositories.Products;
 
     /// <summary>
     ///     Configures the entity of type <typeparamref name="Product" />.
