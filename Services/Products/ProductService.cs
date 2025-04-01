@@ -7,7 +7,7 @@ namespace App.Services.Products;
 
 public class ProductService(IProductRepository productRepository,IUnitOfWork unitOfWork) : IProductService
 {
-    public async Task<ServiceResult<IEnumerable<ProductDto>>> GetTopPriceProductsAsync(int count)
+    public  async Task<ServiceResult<IEnumerable<ProductDto>>> GetTopPriceProductsAsync(int count)
     {
         var productEntites = await productRepository.GetTopPriceProductsAsync(count);
         var products = productEntites.Select(item => new ProductDto(item.Id, item.Name, item.Price, item.Stock)).AsEnumerable();
@@ -22,6 +22,13 @@ public class ProductService(IProductRepository productRepository,IUnitOfWork uni
         var entities =  await productRepository.GetAll().ToListAsync();
         var products = entities.Select(item => new ProductDto(item.Id, item.Name, item.Price, item.Stock)).AsEnumerable();
 
+        return ServiceResult<IEnumerable<ProductDto>>.Success(products);
+    }
+    public async Task<ServiceResult<IEnumerable<ProductDto>>> GetPagedAllAsync(int pageNo,int pageSize)
+    {
+        int skip = (pageNo - 1) * pageSize;
+        var entities =  await productRepository.GetAll().Skip(skip).Take(pageSize).ToListAsync();
+        var products = entities.Select(item => new ProductDto(item.Id, item.Name, item.Price, item.Stock)).AsEnumerable();
         return ServiceResult<IEnumerable<ProductDto>>.Success(products);
     }
 
