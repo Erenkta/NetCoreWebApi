@@ -1,5 +1,6 @@
 ﻿using App.Repositories;
 using App.Repositories.Products;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.Services.Products;
 
@@ -15,7 +16,15 @@ public class ProductService(IProductRepository productRepository,IUnitOfWork uni
             Data = products
         };
     }
-    public async Task<ServiceResult<ProductDto>> GetProductByIdAsync(int id)
+    public async Task<ServiceResult<IEnumerable<ProductDto>>> GetAllAsync()
+    {
+        var entities =  await productRepository.GetAll().ToListAsync();
+        var products = entities.Select(item => new ProductDto(item.Id, item.Name, item.Price, item.Stock)).AsEnumerable();
+
+        return ServiceResult<IEnumerable<ProductDto>>.Success(products);
+    }
+
+    public async Task<ServiceResult<ProductDto>> GetByIdAsync(int id)
     {
         var entity = await productRepository.GetByIdAsync(id);
         if (entity is null)
@@ -26,13 +35,13 @@ public class ProductService(IProductRepository productRepository,IUnitOfWork uni
         return ServiceResult<ProductDto>.Success(product);
     }
 
-    public async Task<ServiceResult<CreateProductResponse>> CreateProductAsync(CreateProductRequest request){
+    public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request){
         var product = new Product { Name = request.Name, Price = request.Price, Stock = request.Stock };
         await productRepository.AddAsync(product);
         await unitOfWork.SaveChangesAsync();
         return ServiceResult<CreateProductResponse>.Success(new CreateProductResponse(product.Id));
     }
-    public async Task<ServiceResult> UpdateProductAsync(int id,UpdateProductRequest request)
+    public async Task<ServiceResult> UpdateAsync(int id,UpdateProductRequest request)
     {
         var entity = await productRepository.GetByIdAsync(id);
         // Önce olumsuz durumları ele almaya Fast fail - Guard Clauses denir
@@ -49,7 +58,7 @@ public class ProductService(IProductRepository productRepository,IUnitOfWork uni
 
         return ServiceResult.Success();
     }
-    public async Task<ServiceResult> DeleteProductAsync(int id)
+    public async Task<ServiceResult> DeleteAsync(int id)
     {
         var entity = await productRepository.GetByIdAsync(id);
         // Önce olumsuz durumları ele almaya Fast fail - Guard Clauses denir
