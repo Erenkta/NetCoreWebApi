@@ -1,6 +1,7 @@
 ﻿using App.Repositories;
 using App.Repositories.Products;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace App.Services.Products;
 
@@ -56,7 +57,7 @@ public class ProductService(IProductRepository productRepository,IUnitOfWork uni
         productRepository.Update(product);
         await unitOfWork.SaveChangesAsync(); 
 
-        return ServiceResult.Success();
+        return ServiceResult.Success(HttpStatusCode.NoContent);
     }
     public async Task<ServiceResult> DeleteAsync(int id)
     {
@@ -70,6 +71,6 @@ public class ProductService(IProductRepository productRepository,IUnitOfWork uni
         productRepository.Delete(entity);
         await unitOfWork.SaveChangesAsync();
 
-        return ServiceResult.Success();
+        return ServiceResult.Success(HttpStatusCode.NoContent);
     }
 }
