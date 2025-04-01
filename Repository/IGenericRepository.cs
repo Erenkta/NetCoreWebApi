@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace App.Repositories
 {
+    /// <summary>
+    /// Generic CRUD operations for any type of <typeparamref name="class" />.
+    /// </summary>
     public interface IGenericRepository<T> where T:class
     {
         IQueryable<T> GetAll();
