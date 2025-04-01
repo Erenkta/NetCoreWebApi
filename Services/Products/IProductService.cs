@@ -1,7 +1,4 @@
-﻿using App.Repositories.Products;
-using App.Repositories;
-
-namespace App.Services.Products
+﻿namespace App.Services.Products
 {
     public interface IProductService
     {
@@ -11,6 +8,7 @@ namespace App.Services.Products
         Task<ServiceResult<ProductDto>> GetByIdAsync(int id);
         Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request);
         Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest request);
+        Task<ServiceResult> UpdateStockAsync(UpdateProductStockRequest request);
         Task<ServiceResult> DeleteAsync(int id);
     }
 }
